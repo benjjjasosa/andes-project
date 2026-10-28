@@ -1,0 +1,719 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ANDES PROTOCOL | Simulador de EmergenciasI </title> 
+  <meta name="description" content="Sistema educativo de simulación de emergencias y evacuaciones en Mendoza.">
+
+  <style>
+
+    :root {
+      --fondo: #170B24;
+      --fondo-secundario: #21102F;
+      --tarjeta: #281538;
+      --violeta: #8528D8;
+      --violeta-claro: #A855F7;
+      --rosa: #D946EF;
+      --rosa-claro: #FCE7F3;
+      --texto: #F8F2FF;
+      --texto-secundario: #D8C5E8;
+      --borde: #65358A;
+      --verde: #6EE7B7;
+    }
+
+    * {
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--fondo);
+      color: var(--texto);
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .contenedor {
+      width: min(1120px, 90%);
+      margin: auto;
+    }
+
+    header {
+      background: linear-gradient(135deg, #170B24, #452064);
+      border-bottom: 1px solid var(--borde);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .barra {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 12px 0;
+    }
+
+    .marca {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .logo {
+      width: 76px;
+      height: 76px;
+      object-fit: contain;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: #000;
+    }
+
+    .marca h1 {
+      color: var(--rosa);
+      font-size: 1.45rem;
+      line-height: 1.2;
+      margin: 0;
+      letter-spacing: 2px;
+    }
+
+    .marca p {
+      color: var(--rosa-claro);
+      font-size: 0.8rem;
+      margin: 5px 0 0;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      justify-content: flex-end;
+    }
+
+    nav a {
+      color: var(--texto);
+      font-size: 0.9rem;
+      font-weight: bold;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: var(--rosa);
+    }
+
+    .hero {
+      padding: 85px 0;
+      background:
+        radial-gradient(circle at top right, #54236F 0, transparent 40%),
+        linear-gradient(135deg, #170B24, #281538);
+    }
+
+    .etiqueta {
+      display: inline-block;
+      background: #49235F;
+      border: 1px solid var(--violeta-claro);
+      color: var(--rosa-claro);
+      border-radius: 30px;
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      margin-bottom: 18px;
+    }
+
+    .hero h2 {
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      line-height: 1.1;
+      max-width: 850px;
+      margin: 0 0 22px;
+    }
+
+    .degradado {
+      background: linear-gradient(90deg, #C084FC, #F0ABFC, #F9A8D4);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      color: var(--texto-secundario);
+      max-width: 720px;
+      font-size: 1.08rem;
+    }
+
+    .botones {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 28px;
+    }
+
+    .boton {
+      display: inline-block;
+      padding: 12px 20px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: linear-gradient(135deg, var(--violeta), var(--rosa));
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: transform 0.2s, filter 0.2s;
+    }
+
+    .boton:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.12);
+    }
+
+    .boton-secundario {
+      background: transparent;
+      border-color: var(--violeta-claro);
+      color: var(--rosa-claro);
+    }
+
+    section {
+      padding: 68px 0;
+      scroll-margin-top: 105px;
+    }
+
+    .titulo-seccion {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      color: var(--violeta-claro);
+      margin: 0 0 12px;
+    }
+
+    .introduccion {
+      color: var(--texto-secundario);
+      max-width: 760px;
+      margin: 0 0 30px;
+    }
+
+    .rejilla {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .tarjeta {
+      background: var(--tarjeta);
+      border: 1px solid var(--borde);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 24px #00000020;
+    }
+
+    .tarjeta h3 {
+      color: var(--rosa-claro);
+      margin-top: 0;
+    }
+
+    .icono {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .tarjeta p,
+    .tarjeta li {
+      color: var(--texto-secundario);
+    }
+
+    .fondo-alternativo {
+      background: #1D0F2A;
+      border-top: 1px solid #392047;
+      border-bottom: 1px solid #392047;
+    }
+
+    .simulador {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .formulario,
+    .resultado {
+      background: var(--tarjeta);
+      border: 1px solid var(--borde);
+      border-radius: 16px;
+      padding: 26px;
+    }
+
+    .formulario h3,
+    .resultado h3 {
+      margin-top: 0;
+      color: var(--rosa-claro);
+    }
+
+    .grupo {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: bold;
+      color: var(--texto);
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 9px;
+      border: 1px solid var(--violeta-claro);
+      background: var(--fondo-secundario);
+      color: white;
+      font-size: 1rem;
+    }
+
+    input:focus,
+    select:focus {
+      outline: 2px solid var(--rosa);
+      outline-offset: 2px;
+    }
+
+    .ayuda {
+      display: block;
+      color: var(--texto-secundario);
+      font-size: 0.82rem;
+      margin-top: 5px;
+    }
+
+    .resultado-vacio {
+      color: var(--texto-secundario);
+    }
+
+    .resultado h4 {
+      color: #E9B5FF;
+      margin-bottom: 6px;
+    }
+
+    .resultado ul {
+      padding-left: 22px;
+      color: var(--texto-secundario);
+    }
+
+    .dato {
+      background: #351947;
+      border-left: 4px solid var(--rosa);
+      padding: 12px 14px;
+      border-radius: 8px;
+      margin: 12px 0;
+    }
+
+    .aviso {
+      color: #FDE68A;
+      background: #3A2A20;
+      border: 1px solid #85613A;
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 0.9rem;
+      margin-top: 20px;
+    }
+
+    .lista-riesgos {
+      padding-left: 20px;
+    }
+
+    .lista-riesgos li {
+      margin-bottom: 10px;
+      color: var(--texto-secundario);
+    }
+
+    .franja {
+      background: linear-gradient(135deg, #492064, #8528D8);
+      border-radius: 18px;
+      padding: 32px;
+      text-align: center;
+    }
+
+    .franja h2 {
+      margin-top: 0;
+      color: white;
+    }
+
+    .franja p {
+      color: #FCE7F3;
+    }
+
+    footer {
+      padding: 30px 0;
+      text-align: center;
+      background: #100718;
+      border-top: 1px solid var(--borde);
+      color: var(--texto-secundario);
+    }
+
+    footer strong {
+      color: var(--rosa);
+    }
+
+    @media (max-width: 850px) {
+      .barra {
+        flex-direction: column;
+      }
+
+      nav {
+        justify-content: center;
+      }
+
+      .rejilla {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .simulador {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding: 60px 0;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .marca {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .logo {
+        width: 90px;
+        height: 90px;
+      }
+
+      nav {
+        gap: 12px;
+      }
+
+      nav a {
+        font-size: 0.82rem;
+      }
+
+      .rejilla {
+        grid-template-columns: 1fr;
+      }
+
+      section {
+        padding: 48px 0;
+      }
+
+      .formulario,
+      .resultado {
+        padding: 18px;
+      }
+
+      .franja {
+        padding: 24px 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="contenedor barra">
+      <div class="marca">
+        <img class="logo" src="Sitio web de contabilidad en estilo blanco y negro.png" alt="Logo de Andes Protocol">
+        <div>
+          <h1>ANDES PROTOCOL</h1>
+          <p>Simulación de emergencias y evacuaciones</p>
+        </div>
+      </div>
+
+      <nav aria-label="Navegación principal">
+        <a href="#inicio">Inicio</a>
+        <a href="#proyecto">Proyecto</a>
+        <a href="#simulador">Simulador</a>
+        <a href="#riesgos">Riesgos</a>
+        <a href="#tecnologia">Tecnología</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="contenedor">
+        <span class="etiqueta">Preparación · Prevención · Tecnología</span>
+
+        <h2>
+          Prepararnos hoy para responder mejor
+          <span class="degradado">mañana.</span>
+        </h2>
+
+        <p>
+          Un proyecto educativo que explora cómo los sistemas de simulación
+          pueden ayudar a mejorar la preparación ante emergencias y evacuaciones
+          en Mendoza, mediante escenarios de práctica y análisis de posibles riesgos.
+        </p>
+
+        <div class="botones">
+          <a class="boton" href="#simulador">Probar el simulador</a>
+          <a class="boton boton-secundario" href="#proyecto">Conocer el proyecto</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="proyecto">
+      <div class="contenedor">
+        <h2 class="titulo-seccion">Nuestro proyecto</h2>
+
+        <p class="introduccion">
+          ANDES PROTOCOL propone explorar el uso de herramientas de simulación
+          para practicar decisiones, analizar evacuaciones y reconocer posibles
+          dificultades antes de una emergencia real.
+        </p>
+
+        <div class="rejilla">
+          <article class="tarjeta">
+            <div class="icono">🎯</div>
+            <h3>Objetivo</h3>
+            <p>
+              Promover la preparación de la población y de las organizaciones
+              de respuesta mediante escenarios simulados de emergencias.
+            </p>
+          </article>
+
+          <article class="tarjeta">
+            <div class="icono">🧭</div>
+            <h3>Planificación</h3>
+            <p>
+              Considerar las personas involucradas, las salidas disponibles,
+              la ubicación y las posibles dificultades de una evacuación.
+            </p>
+          </article>
+
+          <article class="tarjeta">
+            <div class="icono">🤝</div>
+            <h3>Prevención</h3>
+            <p>
+              Favorecer el conocimiento de medidas preventivas y la coordinación
+              durante situaciones que requieren una respuesta organizada.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="fondo-alternativo" id="simulador">
+      <div class="contenedor">
+        <h2 class="titulo-seccion">Simulador de emergencias</h2>
+
+        <p class="introduccion">
+          Seleccioná un escenario e ingresá algunos datos para generar una
+          simulación educativa con recomendaciones iniciales.
+        </p>
+
+        <div class="simulador">
+          <form class="formulario" id="formulario-simulacion">
+            <h3>Configurá el escenario</h3>
+
+            <div class="grupo">
+              <label for="tipo-emergencia">Tipo de emergencia</label>
+              <select id="tipo-emergencia" name="tipo-emergencia" required>
+                <option value="sismo">Sismo</option>
+                <option value="zonda">Viento Zonda</option>
+                <option value="aluvion">Aluvión</option>
+                <option value="tormenta">Tormenta severa</option>
+                <option value="incendio">Incendio</option>
+              </select>
+            </div>
+
+            <div class="grupo">
+              <label for="personas">Cantidad aproximada de personas</label>
+              <input
+                type="number"
+                id="personas"
+                name="personas"
+                min="1"
+                max="10000"
+                value="100"
+                required
+              >
+              <span class="ayuda">Ingresá un número entre 1 y 10.000.</span>
+            </div>
+
+            <div class="grupo">
+              <label for="salidas">Cantidad de salidas disponibles</label>
+              <select id="salidas" name="salidas" required>
+                <option value="1">1 salida</option>
+                <option value="2" selected>2 salidas</option>
+                <option value="3">3 salidas</option>
+                <option value="4">4 o más salidas</option>
+              </select>
+            </div>
+
+            <div class="grupo">
+              <label for="ubicacion">Lugar del escenario</label>
+              <select id="ubicacion" name="ubicacion" required>
+                <option value="escuela">Escuela</option>
+                <option value="vivienda">Vivienda</option>
+                <option value="edificio">Edificio público</option>
+                <option value="espacio-abierto">Espacio abierto</option>
+                <option value="ruta">Ruta o vía de circulación</option>
+              </select>
+            </div>
+
+            <button class="boton" type="submit">
+              Generar simulación
+            </button>
+          </form>
+
+          <div class="resultado" id="resultado" aria-live="polite">
+            <h3>Resultado del escenario</h3>
+            <p class="resultado-vacio">
+              Completá los datos y presioná “Generar simulación” para ver
+              las recomendaciones del escenario seleccionado.
+            </p>
+          </div>
+        </div>
+
+        <div class="aviso">
+          <strong>Importante:</strong> este simulador es educativo e ilustrativo.
+          No calcula tiempos reales, no predice desastres y no reemplaza las
+          indicaciones de Defensa Civil, Bomberos ni de las autoridades.
+          Ante una emergencia real, seguí siempre las instrucciones oficiales.
+        </div>
+      </div>
+    </section>
+
+    <section id="riesgos">
+      <div class="contenedor">
+        <h2 class="titulo-seccion">Riesgos para tener en cuenta en Mendoza</h2>
+
+        <p class="introduccion">
+          Conocer distintos tipos de amenazas permite pensar qué información,
+          protocolos y medidas preventivas conviene considerar en cada escenario.
+        </p>
+
+        <div class="rejilla">
+          <article class="tarjeta">
+            <div class="icono">🌎</div>
+            <h3>Sismos</h3>
+            <p>
+              Practicar cómo protegerse durante el movimiento, reconocer zonas
+              seguras y seguir las instrucciones de evacuación posteriores.
+            </p>
+          </article>
+
+          <article class="tarjeta">
+            <div class="icono">🌬️</div>
+            <h3>Viento Zonda</h3>
+            <p>
+              Considerar ráfagas intensas, polvo, reducción de visibilidad,
+              caída de objetos y posibles focos de incendio.
+            </p>
+          </article>
+
+          <article class="tarjeta">
+            <div class="icono">⛈️</div>
+            <h3>Tormentas y aluviones</h3>
+            <p>
+              Identificar zonas expuestas, evitar cauces y áreas inundables,
+              y prestar atención a las alertas oficiales.
+            </p>
+          </article>
+
+          <article class="tarjeta">
+            <div class="icono">🔥</div>
+            <h3>Incendios</h3>
+            <p>
+              Reconocer las rutas de salida, evitar la inhalación de humo
+              y no volver a ingresar a un lugar evacuado.
+            </p>
+          </article>
+
+          <article class="tarjeta">
+            <div class="icono">📍</div>
+            <h3>Ubicación y mapas</h3>
+            <p>
+              La información geográfica puede ayudar a representar sectores
+              de riesgo, accesos y puntos de encuentro cuando los datos son adecuados.
+            </p>
+          </article>
+
+          <article class="tarjeta">
+            <div class="icono">⏱️</div>
+            <h3>Evacuaciones</h3>
+            <p>
+              Los simulacros permiten observar dificultades de circulación,
+              accesibilidad y organización, sin asumir que todas las situaciones
+              reales serán iguales.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="fondo-alternativo" id="tecnologia">
+      <div class="contenedor">
+        <h2 class="titulo-seccion">Tecnología al servicio de la prevención</h2>
+
+        <p class="introduccion">
+          Los sistemas de simulación pueden ayudar a representar situaciones
+          hipotéticas y organizar la información para aprender de diferentes escenarios.
+        </p>
+
+        <div class="rejilla">
+          <article class="tarjeta">
+            <div class="icono">🖥️</div>
+            <h3>Escenarios simulados</h3>
+            <p>
+              Permiten practicar decisiones sin exponerse deliberadamente
+              al peligro de una emergencia real.
+            </p>
+          </article>
+
+          <article class="tarjeta">
+            <div class="icono">🗺️</div>
+            <h3>Datos y geolocalización</h3>
+            <p>
+              Los mapas y datos actualizados pueden aportar contexto para
+              representar lugares, accesos y posibles zonas de riesgo.
+            </p>
+          </article>
+
+          <article class="tarjeta">
+            <div class="icono">📊</div>
+            <h3>Análisis y mejora</h3>
+            <p>
+              Comparar escenarios permite identificar posibles problemas
+              y pensar mejoras en los procedimientos de prevención.
+            </p>
+          </article>
+        </div>
+
+        <div style="margin-top: 30px;" class="franja">
+          <h2>La preparación puede marcar la diferencia</h2>
+          <p>
+            Informarse, practicar y seguir los protocolos adecuados son pasos
+            importantes para construir una comunidad mejor preparada.
+          </p>
+          <a class="boton boton-secundario" href="#inicio">Volver al inicio</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="contenedor">
+      <p><strong>ANDES PROTOCOL</strong></p>
+      <p>
+        Sistema de simulación para la aplicación de tácticas de emergencias
+        y evacuaciones en Mendoza con perspectivas actuales.
+      </p>
+      <p>Proyecto educativo · Prevención y preparación</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
